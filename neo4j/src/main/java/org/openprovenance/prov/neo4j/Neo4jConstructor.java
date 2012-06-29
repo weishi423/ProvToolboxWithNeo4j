@@ -146,6 +146,7 @@ import java.lang.String;
         }
         return s;
         }
+
     public Object convertAttributes(List<Object> attributes) {
         String s="";
         boolean first=true;
@@ -206,7 +207,7 @@ import java.lang.String;
         CreateSimpleGraph.addProperty(firstNode, "id", t1);
         CreateSimpleGraph.addProperty(firstNode, "activity", t2);
         CreateSimpleGraph.addProperty(firstNode, "entity", t3);
-        CreateSimpleGraph.addProperty(firstNode, "time", s);        
+        CreateSimpleGraph.addProperty(firstNode, "time", s);    
         CreateSimpleGraph.nodeMap.put(t1, firstNode);
         break;
         }
@@ -214,6 +215,7 @@ import java.lang.String;
 		property.put("time", s);
                 property.put("activity", t2);
                 property.put("entity", t3);
+                property.put("type", "used");
         String v="" + aAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -251,6 +253,7 @@ import java.lang.String;
 		property.put("time", s);
                 property.put("entity", t);
                 property.put("activity", u);
+                property.put("type", "wasGeneratedBy");
        String v="" + aAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -280,14 +283,17 @@ import java.lang.String;
 
 
 
-    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
+    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs) {
        String s="" + time + "";
        String t="" + id2 + "";
        String u="" + id1 + "";
+       String w="" + id3 + "";
        Map<String,String> property=new HashMap<String,String>();		
 		property.put("time", s);
                 property.put("entity", u);
-                property.put("activity", t);
+                property.put("activity2", t);
+                property.put("activity1", w);
+                property.put("type", "wasStartedBy");
        String v="" + aAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -317,14 +323,17 @@ import java.lang.String;
 
 
 
-    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
+    public Object convertWasEndedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs) {
        String s="" + time + "";
        String t="" + id2 + "";
        String u="" + id1 + "";
+       String w="" + id3 + "";
        Map<String,String> property=new HashMap<String,String>();		
 		property.put("time", s);
                 property.put("entity", u);
-                property.put("activity", t);
+                property.put("activity2", t);
+                property.put("activity1", w);
+                property.put("type", "wasEndedBy");
        String v="" + aAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -353,13 +362,14 @@ import java.lang.String;
     }
 
 
-    public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {
-      Map<String,String> property=new HashMap<String,String>();      
+    public Object convertWasInformedBy(Object id, Object id2, Object id1, Object aAttrs) {  
       String s="" + id2 + ""; 
       String t="" + id1 + ""; 
       String v="" + aAttrs + "";
+      Map<String,String> property=new HashMap<String,String>();
       property.put("activity2", s);
       property.put("activity1",t);
+      property.put("type", "wasInformedBy");
       while  (!v.isEmpty())
     {
 	    String[] array= v.split("=|,");
@@ -389,25 +399,17 @@ import java.lang.String;
 
 
     public Object convertWasInvalidatedBy(Object id, Object id2,Object id1, Object time, Object aAttrs ) {
-     try {
-         URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(id2), CreateSimpleGraph.nodeMap.get(id1), "wasInvalidateBy");
-     } catch(URISyntaxException e) {
-    	 System.out.println("");
-     }       
-        return null;
-    }
-
-
-
-    public Object convertWasStartedBy(Object id, Object id2,Object id1, Object id3, Object time, Object aAttrs ) {
-       String s="" + id2 + "";
-       String t="" + id1 + "";
-       Map<String,String> property=new HashMap<String,String>();		
-                property.put("activity2", s);
-                property.put("activity1", t);
-       String v="" + aAttrs + "";     
-        while  (!v.isEmpty())
-    {
+       String s="" + time + "";
+       String t="" + id2 + "";
+       String u="" + id1 + "";
+       Map<String,String> property=new HashMap<String,String>();
+       property.put("entity", t);
+       property.put("activity", u);
+       property.put("time", s);
+       property.put("type", "wasInvalidateBy");
+       String v="" + aAttrs + ""; 
+       while  (!v.isEmpty())
+       {
 	    String[] array= v.split("=|,");
 	    List<String> wordList = Arrays.asList(array); 
 	    int i =array.length;
@@ -422,9 +424,9 @@ import java.lang.String;
 	    		v2 = null;    		
 	    	}
 	    	break;
-    }
+       }
      try {
-         URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(id2), CreateSimpleGraph.nodeMap.get(id1), "wasStartedByActivity");
+         URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(id2), CreateSimpleGraph.nodeMap.get(id1), "wasInvalidateBy");
          CreateSimpleGraph.addMetadataToProperty(relationshipUri,property);
      } catch(URISyntaxException e) {
     	 System.out.println("");
@@ -433,12 +435,14 @@ import java.lang.String;
     }
 
 
+
     public Object convertWasAttributedTo(Object id, Object id2,Object id1, Object gAttrs) {
        String s="" + id2 + "";
        String t="" + id1 + "";
        Map<String,String> property=new HashMap<String,String>();		
                 property.put("entity", s);
                 property.put("agent", t);
+                property.put("type", "wasAttributedTo");
        String v="" + gAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -479,6 +483,7 @@ import java.lang.String;
 		property.put("activity", s);
 		property.put("generation", t);
                 property.put("usage", u);
+                property.put("type", "wasDerivedFrom");
      String v="" + aAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -513,8 +518,9 @@ import java.lang.String;
      String s="" + id2 + "";
      String t="" + id1 + ""; 
      Map<String,String> property=new HashMap<String,String>();
-		property.put("entity2", s);
-                property.put("entity1", t);       
+		property.put("alternate2", s);
+                property.put("alternate1", t); 
+                property.put("type", "alternateOf");      
       try {
          URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(id2), CreateSimpleGraph.nodeMap.get(id1), "alternateOf");
          CreateSimpleGraph.addMetadataToProperty(relationshipUri,property);
@@ -530,8 +536,9 @@ import java.lang.String;
      String s="" + id2 + "";
      String t="" + id1 + ""; 
      Map<String,String> property=new HashMap<String,String>();
-		property.put("entity2", s);
-                property.put("entity1", t);  
+		property.put("specificEntity", s);
+                property.put("generalEntity", t);  
+                property.put("type", "speciallizationOf");
       try {
          URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(id2), CreateSimpleGraph.nodeMap.get(id1), "speciallizationOf");
          CreateSimpleGraph.addMetadataToProperty(relationshipUri,property);
@@ -551,6 +558,7 @@ import java.lang.String;
                 property.put("agent2", s);
                 property.put("agent1", t);
                 property.put("activity", u);
+                property.put("type", "actedOnBehalfOf");
        String v="" + aAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -586,7 +594,8 @@ import java.lang.String;
         Map<String,String> property=new HashMap<String,String>();
 		property.put("activity", t);
                 property.put("agent", u);
-		property.put("publicationpolicy", s);
+		property.put("publicationPolicy", s);
+                property.put("type", "wasAssociatedWith");
        String v="" + aAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -623,6 +632,7 @@ import java.lang.String;
      Map<String,String> property=new HashMap<String,String>();
 		property.put("entity2", s);
                 property.put("entity1", t);
+                property.put("Label", "wasRevisionOf");
      String v="" + dAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -660,6 +670,7 @@ import java.lang.String;
      Map<String,String> property=new HashMap<String,String>();
 		property.put("entity2", o);
                 property.put("entity1", s);
+                property.put("Label", "wasQuotedFrom");
      String v="" + dAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -697,6 +708,7 @@ import java.lang.String;
       Map<String,String> property=new HashMap<String,String>();
 		property.put("entity2", s);
                 property.put("entity1", t);
+                property.put("Label", "hasOriginalSource");
      String v="" + dAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -734,6 +746,7 @@ import java.lang.String;
       Map<String,String> property=new HashMap<String,String>();
 		property.put("entity2", s);
                 property.put("entity1", t);
+                property.put("Label", "tracedTo");
       String v="" + dAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -817,6 +830,7 @@ import java.lang.String;
     String u="" + id1 + "";
     property.put("collection2",t);
     property.put("collection1",u);
+    property.put("type", "derivedByInsertionFrom");
     StringBuffer sb = new StringBuffer("");
         while  (!s.isEmpty())
     {
@@ -888,8 +902,11 @@ import java.lang.String;
 
 
     public Object convertDerivedByRemovalFrom(Object id, Object id2, Object id1, Object keys, Object dAttrs) {
+    Map<String,String> property=new HashMap<String,String>();		
+    property.put("Label", "derivedByRemovalFrom");
       try {
          URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(id2), CreateSimpleGraph.nodeMap.get(id1), "derivedByRemovalFrom");
+         CreateSimpleGraph.addMetadataToProperty(relationshipUri,property); 
      } catch(URISyntaxException e) {
     	 System.out.println("");
      }       
@@ -902,8 +919,11 @@ import java.lang.String;
         throw new UnsupportedOperationException();
     }
 
-
-    public Object convertMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+    public Object convertDictionaryMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
+     public Object convertCollectionMemberOf(Object id, Object id2, Object map, Object complete, Object dAttrs) {
         //todo
         throw new UnsupportedOperationException();
     }
@@ -917,6 +937,7 @@ import java.lang.String;
         URI firstNode = CreateSimpleGraph.createNode();	
         CreateSimpleGraph.addProperty(firstNode, "type", "note"); 
         CreateSimpleGraph.addProperty(firstNode, "id", s);
+ 
         String u="" + attrs + ""; 
         String v=u.replaceAll("\\:","\\_");    
         while  (!v.isEmpty())
@@ -943,8 +964,15 @@ import java.lang.String;
 
 
   public Object convertHasAnnotation(Object something, Object note) {
+    Map<String,String> property=new HashMap<String,String>();		
+    String s="" + something + "";
+    String t="" + note + "";     
+    property.put("entity", s);
+    property.put("note",t);
+    property.put("type", "hasAnnotation");
        try {
          URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(something), CreateSimpleGraph.nodeMap.get(note), "hasAnnotation");
+         CreateSimpleGraph.addMetadataToProperty(relationshipUri,property); 
      } catch(URISyntaxException e) {
     	 System.out.println("");
      }       
@@ -957,6 +985,27 @@ import java.lang.String;
         throw new UnsupportedOperationException();
     }
 
+
+
+
+  public Object convertContextualizationOf(Object su, Object bu, Object ta) {
+     String s="" + su + "";
+     String t="" + bu + "";
+     String u="" + ta + "";
+     Map<String,String> property=new HashMap<String,String>();
+		property.put("su", s);
+                property.put("bu", t);
+                property.put("ta", u);
+                property.put("type", "ContextualizationOf");
+     try {
+         URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(su), CreateSimpleGraph.nodeMap.get(ta), "ContextualizationOf");
+         CreateSimpleGraph.addMetadataToProperty(relationshipUri,property);
+     } catch(URISyntaxException e) {
+    	 System.out.println("");
+     }       
+        return null;
+
+    }  
 
 
 
