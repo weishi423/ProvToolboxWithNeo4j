@@ -632,7 +632,7 @@ import java.lang.String;
      Map<String,String> property=new HashMap<String,String>();
 		property.put("entity2", s);
                 property.put("entity1", t);
-                property.put("Label", "wasRevisionOf");
+                property.put("type", "wasRevisionOf");
      String v="" + dAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -670,7 +670,7 @@ import java.lang.String;
      Map<String,String> property=new HashMap<String,String>();
 		property.put("entity2", o);
                 property.put("entity1", s);
-                property.put("Label", "wasQuotedFrom");
+                property.put("type", "wasQuotedFrom");
      String v="" + dAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -708,7 +708,7 @@ import java.lang.String;
       Map<String,String> property=new HashMap<String,String>();
 		property.put("entity2", s);
                 property.put("entity1", t);
-                property.put("Label", "hasOriginalSource");
+                property.put("type", "hasOriginalSource");
      String v="" + dAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -746,7 +746,7 @@ import java.lang.String;
       Map<String,String> property=new HashMap<String,String>();
 		property.put("entity2", s);
                 property.put("entity1", t);
-                property.put("Label", "tracedTo");
+                property.put("type", "tracedTo");
       String v="" + dAttrs + "";     
         while  (!v.isEmpty())
     {
@@ -776,7 +776,45 @@ import java.lang.String;
  
     }
 
+    public Object convertHadPrimarySource(Object id, Object id2,Object id1, Object pe, Object q2, Object q1, Object dAttrs) {
+        //todo
+        throw new UnsupportedOperationException();
+    }
 
+    public Object convertWasInfluencedBy(Object id, Object id2, Object id1, Object dAttrs) {
+      String s="" + id2 + "";    
+      String t="" + id1 + "";
+      Map<String,String> property=new HashMap<String,String>();
+		property.put("influencee", s);
+                property.put("influencer", t);
+                property.put("type", "wasInfluencedBy");
+      String v="" + dAttrs + "";     
+        while  (!v.isEmpty())
+    {
+	    String[] array= v.split("=|,");
+	    List<String> wordList = Arrays.asList(array); 
+	    int i =array.length;
+	    int k = 0;    
+	    	for(k=0;k<i;k=k+2)
+	    	{
+	    		String v1 = wordList.get(k);
+	    		String v2 = wordList.get(k+1);
+                        String v3 = v2.replaceAll("\"|'", "");                     
+                        property.put(v1, v3);
+	    		v1 = null;
+	    		v2 = null;    		
+	    	}
+	    	break;
+
+    }
+       try {
+         URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(id2), CreateSimpleGraph.nodeMap.get(id1), "wasInfluencedBy");
+         CreateSimpleGraph.addMetadataToProperty(relationshipUri,property);
+     } catch(URISyntaxException e) {
+    	 System.out.println("");
+     }       
+        return null;
+    }
 
      public Object convertQualifiedName(String qname) {
         return qname;
@@ -903,7 +941,7 @@ import java.lang.String;
 
     public Object convertDerivedByRemovalFrom(Object id, Object id2, Object id1, Object keys, Object dAttrs) {
     Map<String,String> property=new HashMap<String,String>();		
-    property.put("Label", "derivedByRemovalFrom");
+    property.put("type", "derivedByRemovalFrom");
       try {
          URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(id2), CreateSimpleGraph.nodeMap.get(id1), "derivedByRemovalFrom");
          CreateSimpleGraph.addMetadataToProperty(relationshipUri,property); 
@@ -1006,6 +1044,24 @@ import java.lang.String;
         return null;
 
     }  
+
+ public Object convertMentionOf(Object su, Object bu, Object ta) {
+     String s="" + su + "";
+     String t="" + bu + "";
+     String u="" + ta + "";
+     Map<String,String> property=new HashMap<String,String>();
+		property.put("su", s);
+                property.put("bu", t);
+                property.put("ta", u);
+                property.put("type", "mentionOf");
+     try {
+         URI relationshipUri = CreateSimpleGraph.addRelationship( CreateSimpleGraph.nodeMap.get(su), CreateSimpleGraph.nodeMap.get(ta), "mentionOf");
+         CreateSimpleGraph.addMetadataToProperty(relationshipUri,property);
+     } catch(URISyntaxException e) {
+    	 System.out.println("");
+     }       
+        return null;
+    }
 
 
 
