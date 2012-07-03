@@ -249,6 +249,8 @@ import java.lang.String;
        String s="" + time + "";
        String t="" + id2 + "";
        String u="" + id1 + "";
+       while    (!u.equals("null"))
+       {
        Map<String,String> property=new HashMap<String,String>();		
 		property.put("time", s);
                 property.put("entity", t);
@@ -277,8 +279,12 @@ import java.lang.String;
          CreateSimpleGraph.addMetadataToProperty(relationshipUri,property); 
      } catch(URISyntaxException e) {
     	 System.out.println("");
-     }       
+     } 
+     break;
+     }      
         return null;
+    
+    
     }
 
 
